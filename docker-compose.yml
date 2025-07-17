@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: alexlee-backend-dev
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/alexlee.db
+      - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      - backend-data:/app/data
+    networks:
+      - alexlee-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: alexlee-frontend-dev
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - alexlee-network
+    restart: unless-stopped
+
+volumes:
+  backend-data:
+    driver: local
+
+networks:
+  alexlee-network:
+    driver: bridge

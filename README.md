@@ -55,7 +55,38 @@ alex-lee/
 - Node.js 18+
 - Docker & Docker Compose
 
-### Development Setup
+### Docker (Recommended)
+
+**Development Environment:**
+```bash
+# Using make (cross-platform)
+make dev
+
+# Or using docker-compose directly
+docker-compose up --build
+```
+
+**Production Environment:**
+```bash
+# Using make
+make prod
+
+# Or using docker-compose directly
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+**Other Docker Commands:**
+```bash
+make help           # Show all available commands
+make stop           # Stop all containers
+make clean          # Clean up Docker resources
+make logs           # Show development logs
+make logs-prod      # Show production logs
+make status         # Show container status
+make test           # Run backend unit tests
+```
+
+### Manual Development Setup
 
 1. **Clone the repository**
    ```bash
@@ -77,11 +108,6 @@ alex-lee/
    cd frontend
    npm install
    npm start
-   ```
-
-4. **Docker Development**
-   ```bash
-   docker-compose up --build
    ```
 
 ## 🧪 Testing
