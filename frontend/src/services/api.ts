@@ -14,9 +14,18 @@ import type {
   AlgorithmInfoResponse
 } from '../types/api';
 
-// Configure axios base URL
+// Configure axios base URL based on environment
+const getBaseURL = () => {
+  // In production (Docker), use relative paths that nginx will proxy
+  if (import.meta.env.PROD) {
+    return '/api';
+  }
+  // In development, use localhost
+  return 'http://localhost:5000/api';
+};
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
