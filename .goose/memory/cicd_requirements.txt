@@ -1,0 +1,10 @@
+# cicd github-actions deployment
+GitHub CI/CD Requirements:
+- GitHub Actions full-stack pipeline
+- Public repo: ajacobm/alex-lee
+- End-to-end CI/CD (build, test, deploy)
+- Backend-first approach
+- Frontend ready with create-react-app
+- Progress tracking in markdown document
+- Support for /summarize continuation
+

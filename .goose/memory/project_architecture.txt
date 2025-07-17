@@ -1,0 +1,14 @@
+# architecture dotnet react docker
+Project Architecture Plan:
+- .NET 8 Isolated backend with Dockerfile
+- React.js single-page app frontend
+- Docker Compose for orchestration
+- SQLite database bundled with backend
+- EF Core for data access
+- CQRS pattern for transactions
+- Record classes for immutable models
+- WebAPI with ILogger, middleware, DI
+- Basic authentication, cookies, custom headers
+- Swagger/OpenAPI integration
+- Alex Lee branding integration
+

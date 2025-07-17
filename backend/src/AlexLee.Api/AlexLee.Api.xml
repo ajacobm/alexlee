@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AlexLee.Api</name>
+    </assembly>
+    <members>
+        <member name="T:AlexLee.Api.Controllers.AlgorithmsController">
+            <summary>
+            API Controller for demonstrating C# algorithm implementations
+            Problems 1-3 from the Alex Lee Developer Exercise
+            </summary>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.AlgorithmsController.InterleaveStrings(AlexLee.Api.Controllers.StringInterleaveRequest)">
+            <summary>
+            Problem 1: String Interleaving
+            Interleave two strings character by character
+            Example: "abc" + "123" = "a1b2c3"
+            </summary>
+            <param name="first">First string to interleave</param>
+            <param name="second">Second string to interleave</param>
+            <returns>Interleaved string result</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.AlgorithmsController.CheckPalindrome(AlexLee.Api.Controllers.PalindromeCheckRequest)">
+            <summary>
+            Problem 2: Palindrome Check
+            Check if a string is a palindrome (ignoring case, spaces, and punctuation)
+            </summary>
+            <param name="input">String to check for palindrome</param>
+            <returns>Palindrome check result</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.AlgorithmsController.SearchFiles(AlexLee.Api.Controllers.FileSearchRequest)">
+            <summary>
+            Problem 3: Parallel File Search
+            Search for a string across all files in a directory (demo version with file list)
+            </summary>
+            <param name="request">File search parameters</param>
+            <returns>Search results including file count and occurrences</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.AlgorithmsController.GetAlgorithmInfo">
+            <summary>
+            Get algorithm demonstration information
+            </summary>
+            <returns>Information about available algorithms</returns>
+        </member>
+        <member name="T:AlexLee.Api.Controllers.PurchaseDetailsController">
+            <summary>
+            API Controller for managing Purchase Detail items
+            Implements full CRUD operations and filtering capabilities
+            </summary>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.GetPurchaseDetails(System.String,System.Nullable{System.Int32},System.String,System.String)">
+            <summary>
+            Get all purchase detail items with optional filtering
+            </summary>
+            <param name="purchaseOrderNumber">Filter by purchase order number</param>
+            <param name="itemNumber">Filter by item number</param>
+            <param name="itemName">Filter by item name</param>
+            <param name="itemDescription">Filter by item description</param>
+            <returns>Collection of purchase detail items</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.GetPurchaseDetail(System.Int64)">
+            <summary>
+            Get a specific purchase detail item by ID
+            </summary>
+            <param name="id">Purchase detail item auto ID</param>
+            <returns>Purchase detail item if found</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.CreatePurchaseDetail(AlexLee.Application.Commands.CreatePurchaseDetailCommand)">
+            <summary>
+            Create a new purchase detail item
+            </summary>
+            <param name="command">Purchase detail creation data</param>
+            <returns>Created purchase detail item</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.UpdatePurchaseDetail(System.Int64,AlexLee.Application.Commands.UpdatePurchaseDetailCommand)">
+            <summary>
+            Update an existing purchase detail item
+            </summary>
+            <param name="id">Purchase detail item auto ID</param>
+            <param name="command">Updated purchase detail data</param>
+            <returns>Updated purchase detail item</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.DeletePurchaseDetail(System.Int64)">
+            <summary>
+            Delete a purchase detail item
+            </summary>
+            <param name="id">Purchase detail item auto ID</param>
+            <returns>Success status</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.PurchaseDetailsController.GetDuplicatePurchaseDetails">
+            <summary>
+            Get duplicate purchase detail items
+            Implements SQL Problem #5: Identify duplicate records
+            </summary>
+            <returns>Groups of duplicate purchase detail items</returns>
+        </member>
+    </members>
+</doc>

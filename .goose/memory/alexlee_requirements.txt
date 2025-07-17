@@ -1,0 +1,29 @@
+# requirements exercise alexlee
+Alex Lee Developer Technical Screening Exercise Requirements:
+
+C# Problems:
+1. String interleaving function with unit tests (e.g., "abc" + "123" = "a1b2c3")
+2. Palindrome checker function with unit tests (handles strings/numbers, ignores spaces/punctuation)
+3. Parallel file search function (directory path, search string, output file)
+
+SQL Problems:
+4. Create line number column per item per purchase order number  
+5. Query to identify duplicate records (same purchase order, item number, price, quantity)
+6. Stored procedure to list purchase detail records with line numbers
+
+React Problems:
+7. Purchase detail grid with filters (purchase order #, item #, item name, description) and clear button
+8. Add/update purchase detail records (bonus: modal window)
+
+Optional MVC Problems (can omit if doing React):
+9. MVC project with purchase detail grid and filters
+10. MVC add/update functionality
+
+Key Requirements:
+- Include unit tests for C# functions
+- Show code organization, naming conventions, thought process
+- Extra points for styling React components nicely
+- Can use static arrays or wire up APIs
+- Entity Framework context acceptable
+- Modal windows for add/update earn extra points
+
