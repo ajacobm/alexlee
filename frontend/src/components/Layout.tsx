@@ -13,10 +13,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="layout">
+      {/* Alex Lee Body Triangles */}
+      <div className="bodyTriangleBlue"></div>
+      <div className="bodyTriangleYellow"></div>
+      
       <header className="header">
         <div className="header-container">
           <div className="brand">
-            <h1 className="brand-title">Alex Lee</h1>
+            <div className="brand-logo">
+              <img 
+                src="/alex_lee-logo.svg" 
+                alt="Alex Lee" 
+                className="brand-logo-img"
+              />
+            </div>
             <p className="brand-subtitle">Developer Technical Exercise</p>
           </div>
           <nav className="nav">
