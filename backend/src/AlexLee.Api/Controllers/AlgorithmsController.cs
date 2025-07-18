@@ -5,7 +5,7 @@ namespace AlexLee.Api.Controllers;
 
 /// <summary>
 /// API Controller for demonstrating C# algorithm implementations
-/// Problems 1-3 from the Alex Lee Developer Exercise
+/// Problems 1-3 from the Alex Lee Developer Exercise with enhanced file search
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -24,8 +24,7 @@ public class AlgorithmsController : ControllerBase
     /// Interleave two strings character by character
     /// Example: "abc" + "123" = "a1b2c3"
     /// </summary>
-    /// <param name="first">First string to interleave</param>
-    /// <param name="second">Second string to interleave</param>
+    /// <param name="request">String interleave parameters</param>
     /// <returns>Interleaved string result</returns>
     [HttpPost("string-interleave")]
     [ProducesResponseType(typeof(StringInterleaveResponse), StatusCodes.Status200OK)]
@@ -63,7 +62,7 @@ public class AlgorithmsController : ControllerBase
     /// Problem 2: Palindrome Check
     /// Check if a string is a palindrome (ignoring case, spaces, and punctuation)
     /// </summary>
-    /// <param name="input">String to check for palindrome</param>
+    /// <param name="request">Palindrome check parameters</param>
     /// <returns>Palindrome check result</returns>
     [HttpPost("palindrome-check")]
     [ProducesResponseType(typeof(PalindromeCheckResponse), StatusCodes.Status200OK)]
@@ -101,15 +100,15 @@ public class AlgorithmsController : ControllerBase
     }
 
     /// <summary>
-    /// Problem 3: Parallel File Search
-    /// Search for a string across all files in a directory (demo version with file list)
+    /// Problem 3: Parallel File Search (Enhanced for cross-platform support)
+    /// Search for text across all files in a directory with Windows/Docker support
     /// </summary>
     /// <param name="request">File search parameters</param>
     /// <returns>Search results including file count and occurrences</returns>
     [HttpPost("file-search")]
     [ProducesResponseType(typeof(FileSearchResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<FileSearchResponse> SearchFiles([FromBody] FileSearchRequest request)
+    public async Task<ActionResult<FileSearchResponse>> SearchFiles([FromBody] FileSearchRequest request)
     {
         try
         {
@@ -118,19 +117,89 @@ public class AlgorithmsController : ControllerBase
                 return BadRequest("Request body is required");
             }
 
-            // For API demo, we'll create a simulated search result
-            // In a real application, this would use DirectorySearchUtility.SearchFiles
-            var simulatedResults = SimulateFileSearch(request.SearchTerm);
+            if (string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                return BadRequest("Search term is required");
+            }
 
-            _logger.LogInformation("File search for '{SearchTerm}' found {FileCount} files with {LineCount} total lines and {OccurrenceCount} occurrences", 
-                request.SearchTerm, simulatedResults.FileCount, simulatedResults.LineCount, simulatedResults.OccurrenceCount);
+            // Use actual directory path if provided, otherwise use default search paths
+            var searchPath = request.DirectoryPath ?? GetDefaultSearchPath();
+            var outputFileName = $"search-results-{DateTime.UtcNow:yyyyMMdd-HHmmss}.txt";
 
-            return Ok(simulatedResults);
+            var startTime = DateTime.UtcNow;
+            
+            try
+            {
+                var searchResult = await FileSearchUtilities.SearchFilesParallelAsync(
+                    searchPath, 
+                    request.SearchTerm, 
+                    outputFileName,
+                    _logger);
+
+                var processingTime = (DateTime.UtcNow - startTime).TotalMilliseconds;
+
+                _logger.LogInformation("File search completed for '{SearchTerm}' in {ProcessingTime}ms: {FileCount} files, {LineCount} lines, {OccurrenceCount} occurrences", 
+                    request.SearchTerm, processingTime, searchResult.FilesProcessed, searchResult.LinesWithMatches, searchResult.TotalOccurrences);
+
+                return Ok(new FileSearchResponse
+                {
+                    SearchTerm = request.SearchTerm,
+                    DirectoryPath = searchPath,
+                    FileCount = searchResult.FilesProcessed,
+                    LineCount = searchResult.LinesWithMatches,
+                    OccurrenceCount = searchResult.TotalOccurrences,
+                    OutputFile = searchResult.DestinationFile,
+                    SearchCompleted = true,
+                    ProcessingTimeMs = (int)processingTime,
+                    SearchPaths = FileSearchUtilities.GetAvailableSearchPaths(_logger)
+                });
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                _logger.LogWarning("Directory not found for file search: {DirectoryPath}. Available paths: {AvailablePaths}", 
+                    searchPath, string.Join(", ", FileSearchUtilities.GetAvailableSearchPaths(_logger)));
+
+                return BadRequest(new
+                {
+                    error = "Directory not found",
+                    requestedPath = searchPath,
+                    availablePaths = FileSearchUtilities.GetAvailableSearchPaths(_logger),
+                    message = "Use one of the available paths or mount the desired directory in Docker"
+                });
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error performing file search: {@Request}", request);
-            return BadRequest("Error processing file search");
+            return BadRequest($"Error processing file search: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Get available file search paths for cross-platform environments
+    /// </summary>
+    /// <returns>List of available search paths</returns>
+    [HttpGet("file-search/available-paths")]
+    [ProducesResponseType(typeof(AvailablePathsResponse), StatusCodes.Status200OK)]
+    public ActionResult<AvailablePathsResponse> GetAvailableSearchPaths()
+    {
+        try
+        {
+            var paths = FileSearchUtilities.GetAvailableSearchPaths(_logger);
+            var defaultPath = GetDefaultSearchPath();
+            
+            return Ok(new AvailablePathsResponse
+            {
+                AvailablePaths = paths,
+                DefaultPath = defaultPath,
+                IsDockerContainer = IsRunningInDockerContainer(),
+                RecommendedPath = paths.FirstOrDefault() ?? defaultPath
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting available search paths");
+            return BadRequest("Error retrieving available search paths");
         }
     }
 
@@ -159,54 +228,53 @@ public class AlgorithmsController : ControllerBase
                     Endpoint = "/api/algorithms/palindrome-check"
                 },
                 new() {
-                    Name = "Parallel File Search",
-                    Description = "Search for text across multiple files using parallel processing",
-                    Example = "Search for 'TODO' in all .cs files",
+                    Name = "Parallel File Search (Cross-Platform)",
+                    Description = "Search for text across multiple files using parallel processing with Windows/Docker support",
+                    Example = "Search for 'TODO' in all text files, supports mounted volumes",
                     Endpoint = "/api/algorithms/file-search"
                 }
             },
             TotalAlgorithms = 3,
-            Author = "Alex Lee Developer Exercise"
+            Author = "Alex Lee Developer Exercise - SQL Server Express Edition"
         };
 
         return Ok(info);
     }
 
-    private FileSearchResponse SimulateFileSearch(string searchTerm)
+    private string GetDefaultSearchPath()
     {
-        // Simulate realistic file search results for demo purposes
-        var random = new Random();
-        var fileCount = random.Next(5, 20);
-        var lineCount = random.Next(100, 1000);
-        var occurrenceCount = string.IsNullOrEmpty(searchTerm) ? 0 : random.Next(1, 50);
-
-        return new FileSearchResponse
+        if (IsRunningInDockerContainer())
         {
-            SearchTerm = searchTerm,
-            FileCount = fileCount,
-            LineCount = lineCount,
-            OccurrenceCount = occurrenceCount,
-            SearchCompleted = true,
-            ProcessingTimeMs = random.Next(10, 500),
-            FilesSearched = GenerateSimulatedFileList(fileCount)
-        };
+            // In Docker, prefer mounted Windows directory, fall back to other mounted paths
+            var dockerPaths = new[] { "/app/search-files/windows", "/app/search-files", "/app", "/tmp" };
+            return dockerPaths.FirstOrDefault(Directory.Exists) ?? "/tmp";
+        }
+        else
+        {
+            // In Windows development, use user profile or temp
+            var windowsPaths = new[] 
+            { 
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                @"C:\temp",
+                @"C:\tmp",
+                Path.GetTempPath()
+            };
+            return windowsPaths.FirstOrDefault(Directory.Exists) ?? Path.GetTempPath();
+        }
     }
 
-    private List<string> GenerateSimulatedFileList(int count)
+    private bool IsRunningInDockerContainer()
     {
-        var fileExtensions = new[] { ".cs", ".txt", ".json", ".xml", ".md" };
-        var fileNames = new[] { "Program", "Controller", "Service", "Model", "Helper", "Utility", "Test" };
-        var files = new List<string>();
-
-        var random = new Random();
-        for (int i = 0; i < count; i++)
+        try
         {
-            var name = fileNames[random.Next(fileNames.Length)];
-            var ext = fileExtensions[random.Next(fileExtensions.Length)];
-            files.Add($"/path/to/files/{name}{i + 1}{ext}");
+            return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != null ||
+                   File.Exists("/.dockerenv") ||
+                   Environment.GetEnvironmentVariable("DOCKER_CONTAINER") != null;
         }
-
-        return files;
+        catch
+        {
+            return false;
+        }
     }
 }
 
@@ -247,12 +315,22 @@ public record FileSearchRequest
 public record FileSearchResponse
 {
     public string SearchTerm { get; init; } = string.Empty;
+    public string DirectoryPath { get; init; } = string.Empty;
     public int FileCount { get; init; }
     public int LineCount { get; init; }
     public int OccurrenceCount { get; init; }
+    public string OutputFile { get; init; } = string.Empty;
     public bool SearchCompleted { get; init; }
     public int ProcessingTimeMs { get; init; }
-    public List<string> FilesSearched { get; init; } = new();
+    public List<string> SearchPaths { get; init; } = new();
+}
+
+public record AvailablePathsResponse
+{
+    public List<string> AvailablePaths { get; init; } = new();
+    public string DefaultPath { get; init; } = string.Empty;
+    public bool IsDockerContainer { get; init; }
+    public string RecommendedPath { get; init; } = string.Empty;
 }
 
 public record AlgorithmInfo

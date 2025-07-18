@@ -1,4 +1,27 @@
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: alexlee-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+      - ./SQLExerciseScript.sql:/docker-entrypoint-initdb.d/SQLExerciseScript.sql:ro
+      - ./backend/scripts:/scripts:ro
+    networks:
+      - alexlee-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
   backend:
     build: 
       context: ./backend
@@ -8,10 +31,16 @@ services:
       - "5000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Data Source=/app/data/alexlee.db
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AlexLeeDB;User Id=SA;Password=P@ssw0rd123!;TrustServerCertificate=true
       - ASPNETCORE_URLS=http://+:5000
+      - FileSearchPath=/app/search-files
     volumes:
       - backend-data:/app/data
+      - C:/Users:/app/search-files/windows:ro  # Windows user files (read-only)
+      - ./backend/scripts:/app/scripts:ro
+    depends_on:
+      sqlserver:
+        condition: service_healthy
     networks:
       - alexlee-network
     restart: unless-stopped
@@ -31,6 +60,8 @@ services:
 
 volumes:
   backend-data:
+    driver: local
+  sqlserver-data:
     driver: local
 
 networks:

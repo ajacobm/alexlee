@@ -1,5 +1,6 @@
 using AlexLee.Application;
 using AlexLee.Infrastructure;
+using AlexLee.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -16,7 +17,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Alex Lee Developer Exercise API",
         Version = "v1.0",
-        Description = "REST API for Purchase Detail Management System",
+        Description = "REST API for Purchase Detail Management System with SQL Server Express",
         Contact = new OpenApiContact
         {
             Name = "Alex Lee Developer Exercise",
@@ -49,8 +50,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add health checks
-builder.Services.AddHealthChecks();
+// Add health checks with SQL Server check
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AlexLeeDbContext>("database");
 
 var app = builder.Build();
 
@@ -74,65 +76,44 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-// Ensure database is created and seeded
+// Initialize database with SQL Server Express and SQL scripts
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AlexLee.Infrastructure.Data.AlexLeeDbContext>();
-    await context.Database.EnsureCreatedAsync();
+    var context = scope.ServiceProvider.GetRequiredService<AlexLeeDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     
-    // Add sample data if database is empty
-    if (!context.PurchaseDetailItems.Any())
+    try
     {
-        var sampleData = new[]
+        logger.LogInformation("Starting database initialization...");
+        
+        // Ensure database exists (this will create it if it doesn't exist)
+        var created = await context.Database.EnsureCreatedAsync();
+        
+        if (created)
         {
-            new AlexLee.Domain.Entities.PurchaseDetailItem
-            {
-                PurchaseOrderNumber = "PO-2024-001",
-                ItemNumber = 100,
-                ItemName = "Wireless Keyboard",
-                ItemDescription = "Ergonomic wireless keyboard with RGB backlighting",
-                PurchasePrice = 89.99m,
-                PurchaseQuantity = 5,
-                LastModifiedByUser = "admin",
-                LastModifiedDateTime = DateTime.UtcNow
-            },
-            new AlexLee.Domain.Entities.PurchaseDetailItem
-            {
-                PurchaseOrderNumber = "PO-2024-001",
-                ItemNumber = 101,
-                ItemName = "Wireless Mouse",
-                ItemDescription = "Precision wireless mouse with customizable buttons",
-                PurchasePrice = 45.99m,
-                PurchaseQuantity = 5,
-                LastModifiedByUser = "admin",
-                LastModifiedDateTime = DateTime.UtcNow
-            },
-            new AlexLee.Domain.Entities.PurchaseDetailItem
-            {
-                PurchaseOrderNumber = "PO-2024-002", 
-                ItemNumber = 200,
-                ItemName = "24-inch Monitor",
-                ItemDescription = "4K UHD display with USB-C connectivity",
-                PurchasePrice = 299.99m,
-                PurchaseQuantity = 2,
-                LastModifiedByUser = "manager",
-                LastModifiedDateTime = DateTime.UtcNow
-            },
-            new AlexLee.Domain.Entities.PurchaseDetailItem
-            {
-                PurchaseOrderNumber = "PO-2024-003",
-                ItemNumber = 300,
-                ItemName = "Standing Desk",
-                ItemDescription = "Height-adjustable electric standing desk",
-                PurchasePrice = 599.99m,
-                PurchaseQuantity = 1,
-                LastModifiedByUser = "admin",
-                LastModifiedDateTime = DateTime.UtcNow
-            }
-        };
-
-        context.PurchaseDetailItems.AddRange(sampleData);
-        await context.SaveChangesAsync();
+            logger.LogInformation("Database created successfully.");
+        }
+        else
+        {
+            logger.LogInformation("Database already exists.");
+        }
+        
+        // Initialize database using SQL scripts (replaces hardcoded seed data)
+        await context.InitializeDatabaseAsync();
+        
+        logger.LogInformation("Database initialization completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while initializing the database.");
+        
+        // In development, we might want to continue anyway
+        if (!app.Environment.IsDevelopment())
+        {
+            throw;
+        }
+        
+        logger.LogWarning("Continuing startup despite database initialization error (Development environment).");
     }
 }
 

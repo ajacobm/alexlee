@@ -1,4 +1,4 @@
-# Multi-stage build for .NET 8 API
+# Multi-stage build for .NET 8 API with SQL Server Express support
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 5000
@@ -11,7 +11,7 @@ WORKDIR /src
 COPY ["src/AlexLee.Api/AlexLee.Api.csproj", "src/AlexLee.Api/"]
 COPY ["src/AlexLee.Application/AlexLee.Application.csproj", "src/AlexLee.Application/"]
 COPY ["src/AlexLee.Domain/AlexLee.Domain.csproj", "src/AlexLee.Domain/"]
-COPY ["src/AlexLee.Infrastructure/AlexLee.Infrastructure.csproj", "src/AlexLee.Infrastructure/"]
+COPY ["src/AlexLee.Infrastructure/AlexLee.Infrastructure.csproj", "src/AlexLee.Infrastructure/"]  
 COPY ["src/AlexLee.Algorithms/AlexLee.Algorithms.csproj", "src/AlexLee.Algorithms/"]
 
 # Restore dependencies
@@ -31,11 +31,15 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Create directory for SQLite database
-RUN mkdir -p /app/data
+# Copy SQL scripts for database initialization
+COPY ["scripts/", "/app/scripts/"]
 
-# Set environment variables
-ENV ConnectionStrings__DefaultConnection="Data Source=/app/data/alexlee.db"
+# Create directories for file search functionality and database
+RUN mkdir -p /app/data /app/search-files
+
+# Set environment variables for SQL Server Express
+ENV ConnectionStrings__DefaultConnection="Server=sqlserver,1433;Database=AlexLeeDB;User Id=SA;Password=P@ssw0rd123!;TrustServerCertificate=true"
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV FileSearchPath="/app/search-files"
 
 ENTRYPOINT ["dotnet", "AlexLee.Api.dll"]

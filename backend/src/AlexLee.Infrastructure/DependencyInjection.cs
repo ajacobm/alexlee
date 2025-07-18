@@ -15,13 +15,13 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Register Entity Framework DbContext
+        // Register Entity Framework DbContext for SQL Server
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
-            ?? "Data Source=alexlee.db";
+            ?? "Server=localhost,1433;Database=AlexLeeDB;User Id=SA;Password=P@ssw0rd123!;TrustServerCertificate=true";
 
         services.AddDbContext<AlexLeeDbContext>(options =>
         {
-            options.UseSqlite(connectionString);
+            options.UseSqlServer(connectionString);
             options.EnableSensitiveDataLogging(false);
         });
 
