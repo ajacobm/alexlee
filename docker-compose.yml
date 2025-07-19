@@ -34,7 +34,7 @@ services:
       - FileSearchPath=/app/search-files
     volumes:
       - backend-data:/app/data
-      - /mnt/c/Users/meyer/Desktop:/app/search-files/windows:ro  # Windows user files (read-only)
+      - /mnt/c/Users/meyer:/app/search-files/windows:ro  # Windows user files (read-only)
       - ./backend/scripts:/app/scripts:ro
     depends_on:
       sqlserver:

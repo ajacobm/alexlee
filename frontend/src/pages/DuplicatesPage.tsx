@@ -159,7 +159,7 @@ const DuplicatesPage: React.FC = () => {
             <h4 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Query Logic (Problem #5):</h4>
             <pre style={{ 
               background: 'var(--alex-dark)', 
-              color: '#e2e8f0', 
+              color: '#b0c0d6', 
               padding: '1rem', 
               borderRadius: '0.375rem', 
               fontSize: '0.75rem',
