@@ -175,7 +175,7 @@ The file search functionality has been enhanced to handle cross-platform scenari
 ```yaml
 # In docker-compose.yml
 volumes:
-  - C:/Users:/app/search-files/windows:ro  # Windows user files (read-only)
+  - /mnt/c/Users/meyer/Desktop:/app/search-files/windows:ro  # Windows user files (read-only)
 ```
 
 ### Cross-Platform Path Resolution

@@ -268,7 +268,7 @@ public class AlgorithmsController : ControllerBase
         try
         {
             return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != null ||
-                   File.Exists("/.dockerenv") ||
+                   System.IO.File.Exists("/.dockerenv") ||
                    Environment.GetEnvironmentVariable("DOCKER_CONTAINER") != null;
         }
         catch

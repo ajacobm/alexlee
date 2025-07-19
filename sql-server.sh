@@ -75,7 +75,7 @@ wait_for_sql_server() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker exec -t $SQL_SERVER_CONTAINER /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -Q "SELECT 1" >/dev/null 2>&1; then
+        if docker exec -t $SQL_SERVER_CONTAINER /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -No -Q "SELECT 1" >/dev/null 2>&1; then
             print_success "SQL Server is ready!"
             return 0
         fi
@@ -187,7 +187,7 @@ show_sql_logs() {
 sql_shell() {
     print_info "Connecting to SQL Server shell..."
     print_info "Use 'exit' or Ctrl+C to quit"
-    docker exec -it $SQL_SERVER_CONTAINER /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD"
+    docker exec -it $SQL_SERVER_CONTAINER /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -No
 }
 
 sql_init() {
@@ -200,7 +200,7 @@ sql_init() {
     fi
     
     # Run initialization
-    if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -Q "SELECT 1" >/dev/null 2>&1; then
+    if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -No -Q "SELECT 1" >/dev/null 2>&1; then
         print_info "Running database initialization scripts..."
         
         # The application will handle initialization automatically, but we can trigger it via API
@@ -217,12 +217,12 @@ sql_status() {
     if docker ps | grep -q $SQL_SERVER_CONTAINER; then
         print_success "SQL Server container is running"
         
-        if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -Q "SELECT @@VERSION" 2>/dev/null; then
+        if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -No -Q "SELECT @@VERSION" 2>/dev/null; then
             print_success "SQL Server is accepting connections"
             
             # Check database
-            if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -d AlexLeeDB -Q "SELECT COUNT(*) as RecordCount FROM PurchaseDetailItem" 2>/dev/null; then
-                print_success "AlexLeeDB database is ready"
+            if docker exec $SQL_SERVER_CONTAINER /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "$SQL_PASSWORD" -d AlexLeeDB -No -Q "SELECT COUNT(*) as RecordCount FROM PurchaseDetailItem" 2>/dev/null; then
+                print_success "AlexLeeDB database is ready with data"
             else
                 print_warning "AlexLeeDB database may not be initialized yet"
             fi

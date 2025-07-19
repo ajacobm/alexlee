@@ -269,7 +269,7 @@ public static class FileSearchUtilities
         {
             // Test if we can write to current directory
             var testPath = Path.Combine(currentDir, $"test-{Guid.NewGuid()}.tmp");
-            await File.WriteAllTextAsync(testPath, "test");
+            File.WriteAllText(testPath, "test");  // Use synchronous version
             File.Delete(testPath);
             
             logger?.LogInformation("Using current directory for output: {OutputPath}", currentDirPath);

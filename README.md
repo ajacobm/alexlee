@@ -139,7 +139,7 @@ curl "http://localhost:5000/api/purchasedetails/summary"
 ```yaml
 # Mounts Windows C:/Users to /app/search-files/windows in container
 volumes:
-  - C:/Users:/app/search-files/windows:ro
+  - /mnt/c/Users/meyer/Desktop:/app/search-files/windows:ro
 ```
 
 ### API Usage
