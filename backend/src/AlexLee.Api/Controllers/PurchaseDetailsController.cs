@@ -100,18 +100,19 @@ public class PurchaseDetailsController : ControllerBase
     /// SQL Exercise Question #5: Get duplicate purchase detail records using stored procedure
     /// Identifies records with same purchase order number, item number, price, and quantity
     /// </summary>
-    /// <returns>Duplicate purchase detail items</returns>
+    /// <returns>Duplicate purchase detail groups</returns>
     [HttpGet("duplicates")]
-    [ProducesResponseType(typeof(IEnumerable<PurchaseDetailItem>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<DuplicatePurchaseDetailGroup>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<PurchaseDetailItem>>> GetDuplicatePurchaseDetails()
+    public async Task<ActionResult<IEnumerable<DuplicatePurchaseDetailGroup>>> GetDuplicatePurchaseDetails()
     {
         try
         {
-            var result = await _dbContext.GetDuplicatePurchaseDetailsAsync();
+            var query = new GetDuplicatePurchaseDetailsQuery();
+            var result = await _mediator.Send(query);
 
-            _logger.LogInformation("Retrieved {Count} duplicate purchase details using stored procedure", 
-                result.Count);
+            _logger.LogInformation("Retrieved {Count} duplicate purchase detail groups", 
+                result.Count());
 
             return Ok(result);
         }

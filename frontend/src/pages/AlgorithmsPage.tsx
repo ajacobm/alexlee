@@ -251,7 +251,7 @@ const AlgorithmsPage: React.FC = () => {
                   <div style={{ fontSize: '0.875rem', color: 'var(--alex-text-light)' }}>
                     <div>Search Term: "{fileSearchResult.searchTerm}"</div>
                     <div>Status: {fileSearchResult.searchCompleted ? 'Completed' : 'In Progress'}</div>
-                    <div>Sample Files: {fileSearchResult.filesSearched.slice(0, 3).join(', ')}...</div>
+                    <div>Sample Files: {(fileSearchResult.filesSearched || []).slice(0, 3).join(', ')}{(fileSearchResult.filesSearched || []).length > 3 ? '...' : ''}</div>
                   </div>
                 </div>
               </div>

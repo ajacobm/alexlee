@@ -110,7 +110,7 @@ const DuplicatesPage: React.FC = () => {
                       <div>
                         <strong className="text-sm">Affected Record IDs:</strong>
                         <div style={{ marginTop: '0.5rem' }}>
-                          {group.purchaseDetailItemAutoIds.map((id) => (
+                          {(group.purchaseDetailItemAutoIds || []).map((id) => (
                             <span
                               key={id}
                               style={{

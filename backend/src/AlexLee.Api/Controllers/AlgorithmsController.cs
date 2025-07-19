@@ -151,7 +151,7 @@ public class AlgorithmsController : ControllerBase
                     OutputFile = searchResult.DestinationFile,
                     SearchCompleted = true,
                     ProcessingTimeMs = (int)processingTime,
-                    SearchPaths = FileSearchUtilities.GetAvailableSearchPaths(_logger)
+                    FilesSearched = FileSearchUtilities.GetAvailableSearchPaths(_logger)
                 });
             }
             catch (DirectoryNotFoundException ex)
@@ -322,7 +322,7 @@ public record FileSearchResponse
     public string OutputFile { get; init; } = string.Empty;
     public bool SearchCompleted { get; init; }
     public int ProcessingTimeMs { get; init; }
-    public List<string> SearchPaths { get; init; } = new();
+    public List<string> FilesSearched { get; init; } = new();
 }
 
 public record AvailablePathsResponse
