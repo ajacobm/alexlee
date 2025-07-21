@@ -148,7 +148,7 @@ setup: info dev verify ## Complete setup (info + dev + verify)
 	@echo "📖 Available endpoints:"
 	@echo "  🌐 Frontend: http://localhost:3000"
 	@echo "  🔗 Backend API: http://localhost:5000" 
-	@echo "  📊 Swagger docs: http://localhost:5000/swagger"
+	@echo "  📊 Swagger docs: http://localhost:5000/index.html"
 	@echo "  🗄️  SQL Server: localhost:1433 (SA/P@ssw0rd123!)"
 	@echo ""
 	@echo "🔧 Useful commands:"

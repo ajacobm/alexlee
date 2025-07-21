@@ -102,7 +102,7 @@ start_dev() {
         print_info "Services available:"
         echo "  🌐 Frontend: http://localhost:3000"
         echo "  🔗 API: http://localhost:5000"
-        echo "  📊 Swagger: http://localhost:5000/swagger"
+        echo "  📊 Swagger: http://localhost:5000/index.html"
         echo "  🗄️  SQL Server: localhost:1433"
         echo ""
         print_info "Default SQL Server credentials:"

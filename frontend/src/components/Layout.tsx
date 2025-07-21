@@ -60,11 +60,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             © 2025 Alex Lee Developer Exercise. Built with React, .NET 8, and Entity Framework Core.
           </p>
           <div className="footer-links">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/ajacobm/alexlee" target="_blank" rel="noopener noreferrer">
               GitHub Repository
             </a>
             <span className="separator">•</span>
-            <a href="/swagger" target="_blank" rel="noopener noreferrer">
+            <a href="/index.html" target="_blank" rel="noopener noreferrer">
               API Documentation
             </a>
           </div>
