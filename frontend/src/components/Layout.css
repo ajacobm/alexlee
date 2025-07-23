@@ -1,17 +1,17 @@
-/* Alex Lee Brand Colors */
+/* Alex Lee Official Brand Colors */
 :root {
-  --alex-primary: #2563eb;      /* Professional blue */
-  --alex-primary-dark: #1d4ed8;/* Darker blue for hover */
-  --alex-secondary: #7c3aed;    /* Purple accent */
-  --alex-success: #059669;      /* Green for success */
-  --alex-danger: #dc2626;       /* Red for danger */
-  --alex-warning: #d97706;      /* Orange for warning */
-  --alex-light: #f8fafc;        /* Very light gray */
-  --alex-medium: #e2e8f0;       /* Medium gray */
-  --alex-dark: #1e293b;         /* Dark gray */
-  --alex-text: #334155;         /* Text color */
-  --alex-text-light: #64748b;   /* Light text */
-  --alex-border: #cbd5e1;       /* Border color */
+  --alex-blue: #0074bc;          /* Alex Lee Primary Blue */
+  --alex-blue-dark: #014d7b;     /* Alex Lee Dark Blue */
+  --alex-green: #006227;         /* Alex Lee Green */
+  --alex-gold: #ffc107;          /* Alex Lee Gold (updated to match request) */
+  --alex-yellow: #e8b441;        /* Alex Lee Yellow (original gold) */
+  --alex-white: #ffffff;         /* Pure white */
+  --alex-light-gray: #f8fafc;    /* Very light gray */
+  --alex-medium-gray: #e2e8f0;   /* Medium gray */
+  --alex-dark-gray: #1e293b;     /* Dark gray */
+  --alex-text: #222222;          /* Alex Lee text color */
+  --alex-text-light: #58595b;    /* Light text */
+  --alex-border: #cbd5e1;        /* Border color */
   --alex-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -20,16 +20,65 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Header */
+/* Alex Lee Body Triangles - moved to top to avoid overlapping page content */
+.bodyTriangleBlue {
+  width: 105%;
+  height: 40px;
+  background-color: var(--alex-blue);
+  position: absolute;
+  top: 64px; /* Position right after header height */
+  left: -2.5%;
+  z-index: 5; /* Lower z-index to stay behind content */
+  transform: rotate(1.5deg);
+  transition: top 0.25s ease-in-out;
+}
+
+.bodyTriangleYellow {
+  width: 0;
+  height: 0;
+  border-top: 30px solid var(--alex-yellow); /* Reduced size to avoid overlap */
+  border-right: 20px solid transparent;
+  position: absolute;
+  left: 0;
+  top: 64px; /* Align with header bottom */
+  z-index: 4; /* Lower z-index to stay behind content */
+}
+
+@media (min-width: 768px) {
+  .bodyTriangleBlue {
+    top: 102px; /* Position after larger header */
+    transform: rotate(0.9deg);
+  }
+  
+  .bodyTriangleYellow {
+    top: 102px;
+    border-top: 40px solid var(--alex-yellow);
+    border-right: 25px solid transparent;
+  }
+}
+
+@media (min-width: 992px) {
+  .bodyTriangleYellow {
+    border-top: 50px solid var(--alex-yellow);
+    border-right: 30px solid transparent;
+  }
+}
+
+/* Header - Alex Lee styling */
 .header {
-  background: linear-gradient(135deg, var(--alex-primary), var(--alex-secondary));
-  color: white;
-  box-shadow: var(--alex-shadow);
-  position: sticky;
+  background: var(--alex-white);
+  color: var(--alex-blue-dark);
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1);
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 110;
+  transition: all 0.25s ease-in-out;
 }
 
 .header-container {
@@ -39,61 +88,120 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 64px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+@media (min-width: 768px) {
+  .header-container {
+    height: 102px;
+  }
+}
+
+/* Brand Logo */
 .brand {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
-.brand-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  background: linear-gradient(45deg, white, #e0e7ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.brand-logo {
+  display: block;
+  position: relative;
+  margin-bottom: 0.25rem;
+}
+
+.brand-logo-img {
+  width: 156px;
+  height: 39px;
+  transition: all 0.25s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .brand-logo-img {
+    width: 176px;
+    height: 44px;
+  }
+}
+
+@media (min-width: 992px) {
+  .brand-logo-img {
+    width: 232px;
+    height: 57px;
+  }
 }
 
 .brand-subtitle {
   font-size: 0.875rem;
   margin: 0;
-  opacity: 0.9;
-  font-weight: 300;
+  color: var(--alex-text-light);
+  font-weight: 400;
 }
 
+/* Navigation */
 .nav {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
+  align-items: center;
 }
 
 .nav-link {
-  color: white;
+  color: var(--alex-blue-dark);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.875rem;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
   border: 1px solid transparent;
+  position: relative;
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--alex-blue);
+  background: rgba(0, 116, 188, 0.05);
 }
 
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  font-weight: 600;
+  color: var(--alex-yellow);
+  background: rgba(232, 180, 65, 0.1);
+  font-weight: 700;
+}
+
+/* Current page indicator inspired by Alex Lee */
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: var(--alex-yellow);
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    gap: 2rem;
+  }
+  
+  .nav-link {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
 }
 
 /* Main Content */
 .main {
   flex: 1;
-  background: var(--alex-light);
-  padding: 2rem 0;
+  background: var(--alex-white);
+  padding: 6rem 0 2rem; /* Reduced top padding since triangles are smaller and positioned at top */
+  position: relative;
+  z-index: 5;
 }
 
 .main-container {
@@ -102,11 +210,37 @@
   padding: 0 2rem;
 }
 
-/* Footer */
+/* Footer - Alex Lee gradient style */
 .footer {
-  background: var(--alex-dark);
-  color: var(--alex-text-light);
+  background: linear-gradient(to right, var(--alex-blue-dark) 0%, var(--alex-blue) 100%);
+  color: var(--alex-white);
   padding: 2rem 0;
+  position: relative;
+}
+
+/* Footer triangle inspired by Alex Lee */
+.footer::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-top: 15px solid var(--alex-yellow);
+  border-left: 768px solid transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .footer::before {
+    border-left: 992px solid transparent;
+  }
+}
+
+@media (min-width: 992px) {
+  .footer::before {
+    border-left: 1620px solid transparent;
+  }
 }
 
 .footer-container {
@@ -118,11 +252,16 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 .footer-text {
   margin: 0;
   font-size: 0.875rem;
+  color: var(--alex-white);
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .footer-links {
@@ -132,18 +271,18 @@
 }
 
 .footer-links a {
-  color: var(--alex-text-light);
+  color: var(--alex-white);
   text-decoration: none;
   font-size: 0.875rem;
   transition: color 0.2s ease;
 }
 
 .footer-links a:hover {
-  color: var(--alex-primary);
+  color: var(--alex-yellow);
 }
 
 .separator {
-  color: var(--alex-border);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Card Styles */
@@ -172,109 +311,183 @@
   padding: 1.5rem;
 }
 
-/* Button Styles */
+/* Button Styles - Alex Lee inspired */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
   font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
 }
 
 .btn-primary {
-  background: var(--alex-primary);
-  color: white;
-  border-color: var(--alex-primary);
+  background: var(--alex-blue);
+  color: var(--alex-white);
+  border-color: var(--alex-blue);
 }
 
 .btn-primary:hover {
-  background: var(--alex-primary-dark);
-  border-color: var(--alex-primary-dark);
+  background: var(--alex-blue-dark);
+  border-color: var(--alex-blue-dark);
+  color: var(--alex-white);
+  text-decoration: none;
 }
 
 .btn-secondary {
-  background: var(--alex-medium);
-  color: var(--alex-text);
-  border-color: var(--alex-border);
+  background: var(--alex-white);
+  color: var(--alex-blue);
+  border-color: var(--alex-blue);
 }
 
 .btn-secondary:hover {
-  background: var(--alex-border);
+  background: var(--alex-blue);
+  color: var(--alex-white);
 }
 
 .btn-success {
-  background: var(--alex-success);
-  color: white;
-  border-color: var(--alex-success);
+  background: var(--alex-green);
+  color: var(--alex-white);
+  border-color: var(--alex-green);
+}
+
+.btn-success:hover {
+  background: #004d1f;
+  border-color: #004d1f;
 }
 
 .btn-danger {
-  background: var(--alex-danger);
-  color: white;
-  border-color: var(--alex-danger);
+  background: #dc2626;
+  color: var(--alex-white);
+  border-color: #dc2626;
+}
+
+.btn-warning {
+  background: var(--alex-gold);
+  color: var(--alex-blue-dark);
+  border-color: var(--alex-gold);
 }
 
 .btn-sm {
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-size: 0.75rem;
 }
 
-/* Form Styles */
+/* Card Styles - Alex Lee inspired */
+.card {
+  background: var(--alex-white);
+  border-radius: 0.75rem;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--alex-border);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--alex-border);
+  background: var(--alex-light-gray);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--alex-blue-dark);
+  margin: 0;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Form Styles - Alex Lee inspired */
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
   display: block;
-  font-weight: 500;
-  color: var(--alex-dark);
-  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: var(--alex-blue-dark);
+  margin-bottom: 0.5rem;
   font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
 }
 
 .form-control {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--alex-border);
-  border-radius: 0.375rem;
+  padding: 0.75rem;
+  border: none;
+  border-bottom: 2px solid var(--alex-blue);
+  background: transparent;
   font-size: 0.875rem;
   transition: border-color 0.2s ease;
+  border-radius: 0;
 }
 
 .form-control:focus {
   outline: none;
-  border-color: var(--alex-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-bottom-color: var(--alex-green);
+  background: rgba(0, 116, 188, 0.02);
 }
 
-/* Table Styles */
+.form-control::placeholder {
+  color: rgba(0, 116, 188, 0.5);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Table Styles - Alex Lee inspired */
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  background: var(--alex-white);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .table th,
 .table td {
-  padding: 0.75rem;
+  padding: 1rem 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--alex-border);
 }
 
 .table th {
   font-weight: 600;
-  color: var(--alex-dark);
-  background: var(--alex-light);
+  color: var(--alex-blue-dark);
+  background: var(--alex-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  font-size: 0.75rem;
 }
 
 .table tbody tr:hover {
-  background: rgba(37, 99, 235, 0.02);
+  background: rgba(0, 116, 188, 0.03);
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(248, 250, 252, 0.5);
+}
+
+.table tbody tr:nth-child(even):hover {
+  background: rgba(0, 116, 188, 0.05);
 }
 
 /* Responsive */

@@ -1,3 +1,6 @@
+/* Import Alex Lee preferred fonts */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 /* Import brand styles */
 @import url('./components/Layout.css');
 
@@ -10,45 +13,92 @@
 
 html, body {
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: "Source Sans 3", sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--alex-text);
-  background: var(--alex-light);
+  background: var(--alex-white);
 }
 
 #root {
   height: 100%;
 }
 
-/* Typography */
+/* Typography - Alex Lee style */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--alex-dark);
+  color: var(--alex-blue-dark);
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+h2 {
+  font-size: 2rem;
+  color: var(--alex-blue-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+h3 {
+  font-size: 1.375rem;
+  margin: 0 0 1rem 0;
+  color: var(--alex-blue-dark);
+}
+
+h4 {
+  font-size: 1.125rem;
+  margin: 0 0 0.75rem 0;
+  color: var(--alex-blue-dark);
+}
+
+h5 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--alex-blue-dark);
 }
 
 p {
   line-height: 1.5;
   margin-bottom: 1rem;
+  color: var(--alex-text);
 }
 
 a {
-  color: var(--alex-primary);
+  color: var(--alex-blue);
   text-decoration: none;
   transition: color 0.2s ease;
+  font-weight: 500;
 }
 
 a:hover {
-  color: var(--alex-primary-dark);
+  color: var(--alex-blue-dark);
   text-decoration: underline;
 }
 
+/* Accent colors for semantic meaning */
+.text-blue { color: var(--alex-blue); }
+.text-blue-dark { color: var(--alex-blue-dark); }
+.text-green { color: var(--alex-green); }
+.text-gold { color: var(--alex-gold); }
+.text-yellow { color: var(--alex-yellow); }
+
+.bg-blue { background-color: var(--alex-blue); }
+.bg-blue-dark { background-color: var(--alex-blue-dark); }
+.bg-green { background-color: var(--alex-green); }
+.bg-gold { background-color: var(--alex-gold); }
+.bg-yellow { background-color: var(--alex-yellow); }
+
 /* Focus styles for accessibility */
 *:focus {
-  outline: 2px solid var(--alex-primary);
+  outline: 2px solid var(--alex-blue);
   outline-offset: 2px;
 }
 
@@ -56,24 +106,16 @@ a:hover {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-  background: var(--alex-medium);
+  background: var(--alex-medium-gray);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
 }
 
 /* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-left {
-  text-align: left;
-}
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
 
 .mb-0 { margin-bottom: 0; }
 .mb-1 { margin-bottom: 0.25rem; }
@@ -87,37 +129,17 @@ code {
 .mt-3 { margin-top: 1rem; }
 .mt-4 { margin-top: 1.5rem; }
 
-.font-bold {
-  font-weight: 600;
-}
+.font-bold { font-weight: 600; }
+.font-medium { font-weight: 500; }
 
-.font-medium {
-  font-weight: 500;
-}
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
 
-.text-sm {
-  font-size: 0.875rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.text-primary {
-  color: var(--alex-primary);
-}
-
-.text-secondary {
-  color: var(--alex-text-light);
-}
-
-.text-success {
-  color: var(--alex-success);
-}
-
-.text-danger {
-  color: var(--alex-danger);
-}
+.text-primary { color: var(--alex-blue); }
+.text-secondary { color: var(--alex-text-light); }
+.text-success { color: var(--alex-green); }
+.text-danger { color: #dc2626; }
+.text-warning { color: var(--alex-gold); }
 
 /* Animation classes */
 .fade-in {
@@ -137,8 +159,8 @@ code {
 
 /* Loading spinner */
 .loading-spinner {
-  border: 2px solid var(--alex-medium);
-  border-top: 2px solid var(--alex-primary);
+  border: 2px solid var(--alex-medium-gray);
+  border-top: 2px solid var(--alex-blue);
   border-radius: 50%;
   width: 1rem;
   height: 1rem;
