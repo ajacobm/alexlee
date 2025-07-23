@@ -23,6 +23,7 @@ public class AlexLeeDbContext : DbContext
     }
     
     public DbSet<PurchaseDetailItem> PurchaseDetailItems { get; set; } = null!;
+    public DbSet<ApplicationLog> ApplicationLogs { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +89,97 @@ public class AlexLeeDbContext : DbContext
                 
             // LineNumber is computed and not stored in the database
             entity.Ignore(e => e.LineNumber);
+        });
+        
+        // Configure ApplicationLog entity
+        modelBuilder.Entity<ApplicationLog>(entity =>
+        {
+            entity.ToTable("ApplicationLogs");
+            
+            // Primary key
+            entity.HasKey(e => e.Id);
+            
+            // Configure properties
+            entity.Property(e => e.Id)
+                .HasColumnName("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("bigint");
+            
+            entity.Property(e => e.Timestamp)
+                .HasColumnName("Timestamp")
+                .HasColumnType("datetime2(7)")
+                .HasDefaultValueSql("GETUTCDATE()")
+                .IsRequired();
+            
+            entity.Property(e => e.Level)
+                .HasColumnName("Level")
+                .HasMaxLength(50)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired();
+            
+            entity.Property(e => e.Category)
+                .HasColumnName("Category")
+                .HasMaxLength(200)
+                .HasColumnType("nvarchar(200)")
+                .IsRequired();
+            
+            entity.Property(e => e.Message)
+                .HasColumnName("Message")
+                .HasColumnType("nvarchar(max)")
+                .IsRequired();
+            
+            entity.Property(e => e.Exception)
+                .HasColumnName("Exception")
+                .HasColumnType("nvarchar(max)");
+            
+            entity.Property(e => e.Properties)
+                .HasColumnName("Properties")
+                .HasColumnType("nvarchar(max)");
+            
+            entity.Property(e => e.TraceId)
+                .HasColumnName("TraceId")
+                .HasMaxLength(32)
+                .HasColumnType("nvarchar(32)");
+            
+            entity.Property(e => e.SpanId)
+                .HasColumnName("SpanId")
+                .HasMaxLength(16)
+                .HasColumnType("nvarchar(16)");
+            
+            entity.Property(e => e.UserId)
+                .HasColumnName("UserId")
+                .HasMaxLength(100)
+                .HasColumnType("nvarchar(100)");
+            
+            entity.Property(e => e.RequestPath)
+                .HasColumnName("RequestPath")
+                .HasMaxLength(500)
+                .HasColumnType("nvarchar(500)");
+            
+            entity.Property(e => e.MachineName)
+                .HasColumnName("MachineName")
+                .HasMaxLength(100)
+                .HasColumnType("nvarchar(100)")
+                .HasDefaultValueSql("HOST_NAME()")
+                .IsRequired();
+            
+            entity.Property(e => e.ProcessId)
+                .HasColumnName("ProcessId")
+                .HasColumnType("int")
+                .HasDefaultValueSql("@@SPID")
+                .IsRequired();
+            
+            // Indexes for performance
+            entity.HasIndex(e => new { e.Level, e.Timestamp })
+                .HasDatabaseName("IX_ApplicationLogs_Level_Timestamp")
+                .IsDescending(false, true);
+            
+            entity.HasIndex(e => new { e.Category, e.Timestamp })
+                .HasDatabaseName("IX_ApplicationLogs_Category_Timestamp")
+                .IsDescending(false, true);
+            
+            entity.HasIndex(e => e.TraceId)
+                .HasDatabaseName("IX_ApplicationLogs_TraceId");
         });
         
         // No hardcoded seed data - data will come from SQL script

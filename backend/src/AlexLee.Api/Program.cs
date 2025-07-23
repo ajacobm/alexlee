@@ -1,6 +1,7 @@
 using AlexLee.Application;
 using AlexLee.Infrastructure;
 using AlexLee.Infrastructure.Data;
+using AlexLee.Infrastructure.Extensions;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -32,6 +33,20 @@ builder.Services.AddSwaggerGen(c =>
     {
         c.IncludeXmlComments(xmlPath);
     }
+});
+
+// Configure logging with database logger
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+// Add custom database logging for Warning and Error levels
+builder.Logging.AddDatabaseLogger(config =>
+{
+    config.MinimumLevel = LogLevel.Warning;
+    config.BufferSize = 50;
+    config.FlushInterval = TimeSpan.FromSeconds(30);
+    config.IncludeScopes = true;
 });
 
 // Add Application and Infrastructure services

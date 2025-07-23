@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AlexLee.Infrastructure.Data;
+using AlexLee.Infrastructure.Extensions;
 
 namespace AlexLee.Infrastructure;
 
