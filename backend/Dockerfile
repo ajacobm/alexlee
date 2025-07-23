@@ -39,7 +39,7 @@ RUN mkdir -p /app/data /app/search-files
 
 # Set environment variables for SQL Server Express
 ENV ConnectionStrings__DefaultConnection="Server=sqlserver,1433;Database=AlexLeeDB;User Id=SA;Password=P@ssw0rd123!;TrustServerCertificate=true"
-ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENV FileSearchPath="/app/search-files"
 
 ENTRYPOINT ["dotnet", "AlexLee.Api.dll"]

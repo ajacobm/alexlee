@@ -6,19 +6,31 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=P@ssw0rd123!
       - MSSQL_PID=Express
+      - MSSQL_DATABASE=AlexLeeDB
     ports:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
+      - ./backend/scripts:/docker-entrypoint-initdb.d:ro
+      - ./SQLExerciseScript.sql:/usr/src/app/SQLExerciseScript.sql:ro
     networks:
       - alexlee-network
     restart: unless-stopped
+    command: >
+      bash -c "
+      /opt/mssql/bin/sqlservr &
+      sleep 60s &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -No -Q 'CREATE DATABASE AlexLeeDB' &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -d AlexLeeDB -No -i /usr/src/app/SQLExerciseScript.sql &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -d AlexLeeDB -No -i /docker-entrypoint-initdb.d/stored-procedures.sql &&
+      wait
+      "
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -No -Q 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 120s
 
   backend:
     build: 
@@ -30,11 +42,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AlexLeeDB;User Id=SA;Password=P@ssw0rd123!;TrustServerCertificate=true
-      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_HTTP_PORTS=""
       - FileSearchPath=/app/search-files
     volumes:
       - backend-data:/app/data
-      - /mnt/c/Users/meyer:/app/search-files/windows:ro  # Windows user files (read-only)
+      # - /mnt/c/Users/meyer:/app/search-files/windows:ro  # Windows user files (read-only) - temporarily disabled
       - ./backend/scripts:/app/scripts:ro
     depends_on:
       sqlserver:
