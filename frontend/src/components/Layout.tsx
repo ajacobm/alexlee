@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Layout.css';
-
+import logo from '../assets/alex_lee-logo.svg';
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -13,16 +13,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="layout">
-      {/* Alex Lee Body Triangles */}
-      <div className="bodyTriangleBlue"></div>
-      <div className="bodyTriangleYellow"></div>
       
       <header className="header">
         <div className="header-container">
           <div className="brand">
             <div className="brand-logo">
               <img 
-                src="/alex_lee-logo.svg" 
+                src={logo} 
                 alt="Alex Lee" 
                 className="brand-logo-img"
               />
