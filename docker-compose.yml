@@ -21,7 +21,7 @@ services:
       /opt/mssql/bin/sqlservr &
       sleep 60s &&
       /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -No -Q 'CREATE DATABASE AlexLeeDB' &&
-      /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -d AlexLeeDB -No -i /usr/src/app/SQLExerciseScript.sql &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -d AlexLeeDB -No -i /docker-entrypoint-initdb.d/init-database.sql &&
       /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'P@ssw0rd123!' -d AlexLeeDB -No -i /docker-entrypoint-initdb.d/stored-procedures.sql &&
       wait
       "
