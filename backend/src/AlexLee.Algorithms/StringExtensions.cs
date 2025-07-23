@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -38,6 +39,11 @@ public static class StringExtensions
         return result.ToString();
     }
     
+    public static string InterleaveWithLinq(this string source, string other)
+    {
+        return new string(source.Zip(other, (c1, c2) => new[] { c1, c2 }).SelectMany(x => x).ToArray());
+    }
+
     /// <summary>
     /// Problem #2: Checks if a string is a palindrome
     /// Ignores spaces, punctuation, and case sensitivity

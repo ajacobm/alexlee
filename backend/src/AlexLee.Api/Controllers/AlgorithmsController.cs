@@ -38,9 +38,9 @@ public class AlgorithmsController : ControllerBase
                 return BadRequest("Request body is required");
             }
 
-            var result = request.First.InterleaveWith(request.Second);
+            var result = request.First.InterleaveWithLinq(request.Second);
 
-            _logger.LogInformation("Interleaved '{First}' with '{Second}' = '{Result}'", 
+            _logger.LogInformation("Interleaved with Linq Zip: '{First}' with '{Second}' = '{Result}'", 
                 request.First ?? "null", request.Second ?? "null", result);
 
             return Ok(new StringInterleaveResponse
