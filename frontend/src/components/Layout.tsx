@@ -51,6 +51,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             >
               Duplicates
             </Link>
+            <Link 
+              to="/telemetry" 
+              className={`nav-link ${isActive('/telemetry') ? 'active' : ''}`}
+            >
+              Telemetry
+            </Link>
           </nav>
         </div>
       </header>

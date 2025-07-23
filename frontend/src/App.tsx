@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import PurchaseDetailsPage from './pages/PurchaseDetailsPage';
 import AlgorithmsPage from './pages/AlgorithmsPage';
 import DuplicatesPage from './pages/DuplicatesPage';
+import TelemetryPage from './pages/TelemetryPage';
 import './App.css';
 
 // Create a client for React Query
@@ -28,6 +29,7 @@ function App() {
             <Route path="/purchase-details" element={<PurchaseDetailsPage />} />
             <Route path="/algorithms" element={<AlgorithmsPage />} />
             <Route path="/duplicates" element={<DuplicatesPage />} />
+            <Route path="/telemetry" element={<TelemetryPage />} />
           </Routes>
         </Layout>
       </Router>
