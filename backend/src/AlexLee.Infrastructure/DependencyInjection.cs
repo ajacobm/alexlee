@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AlexLee.Infrastructure.Data;
 using AlexLee.Infrastructure.Extensions;
+using AlexLee.Infrastructure.Services;
 
 namespace AlexLee.Infrastructure;
 
@@ -25,6 +26,15 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString);
             options.EnableSensitiveDataLogging(false);
         });
+
+        // Register log streaming service configuration
+        var streamingConfig = new LogStreamingConfiguration();
+        configuration.GetSection("Telemetry:Streaming").Bind(streamingConfig);
+        services.AddSingleton(streamingConfig);
+
+        // Register log streaming background service
+        services.AddSingleton<LogStreamingService>();
+        services.AddHostedService<LogStreamingService>(provider => provider.GetRequiredService<LogStreamingService>());
 
         return services;
     }

@@ -117,6 +117,43 @@
             Response model for purchase detail summary
             </summary>
         </member>
+        <member name="T:AlexLee.Api.Controllers.TelemetryController">
+            <summary>
+            Controller for telemetry data access and streaming
+            </summary>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.TelemetryController.GetMetrics">
+            <summary>
+            Get current application metrics in Prometheus format
+            </summary>
+            <returns>Prometheus-compatible metrics text</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.TelemetryController.StreamLogs(System.String,System.Int32)">
+            <summary>
+            Stream logs in real-time using Server-Sent Events (SSE)
+            </summary>
+            <param name="level">Minimum log level to stream (default: Warning)</param>
+            <param name="maxLines">Maximum number of lines to initially send (default: 50)</param>
+            <returns>SSE stream of log entries</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.TelemetryController.GetLogs(System.Int32,System.Int32,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get paginated historical logs
+            </summary>
+            <param name="page">Page number (1-based)</param>
+            <param name="size">Page size (default: 100)</param>
+            <param name="level">Filter by log level</param>
+            <param name="category">Filter by category</param>
+            <param name="fromDate">Filter logs from this date</param>
+            <param name="toDate">Filter logs to this date</param>
+            <returns>Paginated log entries</returns>
+        </member>
+        <member name="M:AlexLee.Api.Controllers.TelemetryController.GetLogStatistics">
+            <summary>
+            Get log statistics summary
+            </summary>
+            <returns>Log statistics including counts by level and recent trends</returns>
+        </member>
         <member name="T:AlexLee.Api.Middleware.TelemetryMiddleware">
             <summary>
             Middleware to capture telemetry data for all HTTP requests
