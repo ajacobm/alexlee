@@ -54,8 +54,8 @@ export const TelemetryConsole: React.FC<TelemetryConsoleProps> = ({
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         log =>
-          log.message.toLowerCase().includes(term) ||
-          log.category.toLowerCase().includes(term) ||
+          log.message?.toLowerCase().includes(term) ||
+          log.category?.toLowerCase().includes(term) ||
           (log.exception && log.exception.toLowerCase().includes(term))
       );
     }
@@ -71,7 +71,7 @@ export const TelemetryConsole: React.FC<TelemetryConsoleProps> = ({
 
     if (filters.category) {
       filtered = filtered.filter(log => 
-        log.category.toLowerCase().includes(filters.category!.toLowerCase())
+        log.category?.toLowerCase().includes(filters.category!.toLowerCase())
       );
     }
 
@@ -313,11 +313,11 @@ export const TelemetryConsole: React.FC<TelemetryConsoleProps> = ({
           </div>
         ) : (
           filteredLogs.map((log, index) => (
-            <div key={`${log.id}-${index}`} className={`log-entry log-${log.level.toLowerCase()}`}>
+            <div key={`${log.id}-${index}`} className={`log-entry log-${(log.level || 'unknown').toLowerCase()}`}>
               <div className="log-header">
                 <span className="log-timestamp">{formatTimestamp(log.timestamp)}</span>
-                {getLogLevelBadge(log.level)}
-                <span className="log-category">{log.category}</span>
+                {log.level && getLogLevelBadge(log.level)}
+                <span className="log-category">{log.category || 'Unknown'}</span>
                 {log.traceId && (
                   <span className="log-trace" title={`Trace: ${log.traceId}`}>
                     🔗 {log.traceId.substring(0, 8)}...
@@ -325,7 +325,7 @@ export const TelemetryConsole: React.FC<TelemetryConsoleProps> = ({
                 )}
               </div>
               
-              <div className="log-message">{log.message}</div>
+              <div className="log-message">{log.message || 'No message'}</div>
               
               {log.exception && (
                 <details className="log-exception">

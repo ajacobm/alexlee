@@ -210,6 +210,11 @@
   background: rgba(149, 165, 166, 0.1);
 }
 
+.log-entry.log-unknown {
+  border-left-color: #9b59b6;
+  background: rgba(155, 89, 182, 0.1);
+}
+
 .log-header {
   display: flex;
   align-items: center;
