@@ -2,8 +2,13 @@ using AlexLee.Application;
 using AlexLee.Infrastructure;
 using AlexLee.Infrastructure.Data;
 using AlexLee.Infrastructure.Extensions;
+using AlexLee.Api.Middleware;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +23,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Alex Lee Developer Exercise API",
         Version = "v1.0",
-        Description = "REST API for Purchase Detail Management System with SQL Server Express",
+        Description = "REST API for Purchase Detail Management System with SQL Server Express and OpenTelemetry",
         Contact = new OpenApiContact
         {
             Name = "Alex Lee Developer Exercise",
@@ -34,6 +39,72 @@ builder.Services.AddSwaggerGen(c =>
         c.IncludeXmlComments(xmlPath);
     }
 });
+
+// Configure OpenTelemetry
+var serviceName = builder.Configuration["OpenTelemetry:ServiceName"] ?? "AlexLee.Api";
+var serviceVersion = builder.Configuration["OpenTelemetry:ServiceVersion"] ?? "1.0.0";
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: serviceName, serviceVersion: serviceVersion)
+        .AddAttributes(new Dictionary<string, object>
+        {
+            ["deployment.environment"] = builder.Environment.EnvironmentName,
+            ["service.instance.id"] = Environment.MachineName
+        }))
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation(options =>
+        {
+            options.Filter = httpContext => 
+            {
+                // Filter out health checks and swagger from tracing to reduce noise
+                var path = httpContext.Request.Path.Value?.ToLower() ?? "";
+                return !path.Contains("/health") && 
+                       !path.Contains("/swagger") && 
+                       !path.Contains("/favicon.ico");
+            };
+            options.RecordException = true;
+        })
+        .AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForText = true;
+            options.SetDbStatementForStoredProcedure = true;
+        })
+        .AddHttpClientInstrumentation(options =>
+        {
+            options.RecordException = true;
+        })
+        .AddSqlClientInstrumentation(options =>
+        {
+            options.SetDbStatementForText = true;
+            options.RecordException = true;
+        })
+        .AddConsoleExporter()
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(builder.Configuration["OpenTelemetry:Endpoint"] ?? "http://localhost:4317");
+        }))
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddProcessInstrumentation()
+        .AddMeter("AlexLee.Application")
+        .AddConsoleExporter()
+        .AddOtlpExporter());
+
+// Add Azure Application Insights (if configured)
+var appInsightsConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights");
+if (!string.IsNullOrEmpty(appInsightsConnectionString))
+{
+    builder.Services.AddApplicationInsightsTelemetry(options =>
+    {
+        options.ConnectionString = appInsightsConnectionString;
+        options.EnableAdaptiveSampling = true;
+        options.EnableHeartbeat = true;
+        options.EnableDebugLogger = builder.Environment.IsDevelopment();
+    });
+}
 
 // Configure logging with database logger
 builder.Logging.ClearProviders();
@@ -85,6 +156,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowReactApp");
+
+// Add telemetry middleware to capture request metrics
+app.UseMiddleware<TelemetryMiddleware>();
 
 app.UseAuthorization();
 

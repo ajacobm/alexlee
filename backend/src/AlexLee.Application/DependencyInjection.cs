@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using System.Reflection;
+using AlexLee.Application.Telemetry;
 
 namespace AlexLee.Application;
 
@@ -16,6 +17,9 @@ public static class DependencyInjection
     {
         // Register MediatR for CQRS pattern
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        // Register telemetry service
+        services.AddSingleton<ITelemetryService, TelemetryService>();
 
         return services;
     }

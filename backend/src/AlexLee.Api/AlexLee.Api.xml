@@ -117,5 +117,10 @@
             Response model for purchase detail summary
             </summary>
         </member>
+        <member name="T:AlexLee.Api.Middleware.TelemetryMiddleware">
+            <summary>
+            Middleware to capture telemetry data for all HTTP requests
+            </summary>
+        </member>
     </members>
 </doc>
