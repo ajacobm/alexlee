@@ -39,6 +39,13 @@ public static class StringExtensions
         return result.ToString();
     }
     
+    /// <summary>
+    /// Problem #1: Interleaves two strings by alternating characters using LINQ Zip method
+    /// Example: "abc".InterleaveWith("123") returns "a1b2c3"
+    /// </summary>
+    /// <param name="source">First source string</param>
+    /// <param name="other">Second source string</param>
+    /// <returns>Interleaved string with alternating characters</returns>
     public static string InterleaveWithLinq(this string source, string other)
     {
         return new string(source.Zip(other, (c1, c2) => new[] { c1, c2 }).SelectMany(x => x).ToArray());

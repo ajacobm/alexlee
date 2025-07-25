@@ -130,7 +130,7 @@ public class AlgorithmsController : ControllerBase
             
             try
             {
-                var searchResult = await FileSearchUtilities.SearchFilesParallelAsync(
+                var searchResult = await FileSearchUtilities.SearchFilesParallelReduxAsync(
                     searchPath, 
                     request.SearchTerm, 
                     outputFileName,

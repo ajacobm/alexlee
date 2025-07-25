@@ -102,6 +102,98 @@ public static class FileSearchUtilities
     }
     
     /// <summary>
+    /// This version is better for I/O bound operations like disk reads
+    /// </summary>
+    /// <param name="sourceDirectoryPath"></param>
+    /// <param name="searchText"></param>
+    /// <param name="destinationFileName"></param>
+    /// <param name="logger"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="DirectoryNotFoundException"></exception>
+    public async static Task<FileSearchResult> SearchFilesParallelReduxAsync(
+        string sourceDirectoryPath,
+        string searchText,
+        string destinationFileName,
+        ILogger? logger = null)
+    {
+        if (string.IsNullOrWhiteSpace(sourceDirectoryPath))
+            throw new ArgumentException("Source directory path cannot be null or empty", nameof(sourceDirectoryPath));
+
+        if (string.IsNullOrWhiteSpace(searchText))
+            throw new ArgumentException("Search text cannot be null or empty", nameof(searchText));
+
+        if (string.IsNullOrWhiteSpace(destinationFileName))
+            throw new ArgumentException("Destination file name cannot be null or empty", nameof(destinationFileName));
+
+        // Resolve and validate the search path
+        var resolvedPath = ResolveCrossPlatformPath(sourceDirectoryPath, logger);
+        if (!Directory.Exists(resolvedPath))
+        {
+            throw new DirectoryNotFoundException($"Directory not found: {sourceDirectoryPath} (resolved to: {resolvedPath})");
+        }
+
+        logger?.LogInformation("Starting file search in directory: {ResolvedPath}", resolvedPath);
+
+        // Get all files in directory
+        var files = Directory.GetFiles(resolvedPath, "*", SearchOption.AllDirectories)
+            .Where(f => IsTextFile(f))
+            .ToArray();
+
+        logger?.LogInformation("Found {FileCount} text files to process", files.Length);
+
+        // Thread-safe collections for results
+        var matchingLines = new ConcurrentBag<string>();
+        var processedFiles = 0;
+        var totalOccurrences = 0;
+        var linesWithMatches = 0;
+
+        // Local async function to process each file
+        async Task ProcessFileAsync(string file)
+        {
+            try
+            {
+                // Run the file processing on a background thread to avoid blocking
+                var fileResults = await Task.Run(() => ProcessFile(file, searchText));
+
+                // Add matching lines to collection
+                foreach (var line in fileResults.MatchingLines)
+                {
+                    matchingLines.Add($"{Path.GetFileName(file)}: {line}");
+                }
+
+                // Thread-safe increment
+                Interlocked.Increment(ref processedFiles);
+                Interlocked.Add(ref totalOccurrences, fileResults.OccurrenceCount);
+                Interlocked.Add(ref linesWithMatches, fileResults.MatchingLines.Count);
+            }
+            catch (Exception ex)
+            {
+                // Log error but continue processing other files
+                logger?.LogWarning(ex, "Error processing file {FilePath}", file);
+            }
+        }
+
+        // Create tasks for all files and run them in parallel
+        var tasks = files.Select(file => ProcessFileAsync(file)).ToArray();
+        await Task.WhenAll(tasks); // better for I/O bound operations
+
+        // Write results to destination file (handle output path resolution)
+        var outputPath = ResolveOutputPath(destinationFileName, logger);
+        var outputLines = matchingLines.OrderBy(line => line).ToArray();
+        await File.WriteAllLinesAsync(outputPath, outputLines);
+
+        logger?.LogInformation("File search completed. Results written to: {OutputPath}", outputPath);
+        return new FileSearchResult
+        {
+            FilesProcessed = processedFiles,
+            LinesWithMatches = linesWithMatches,
+            TotalOccurrences = totalOccurrences,
+            DestinationFile = outputPath
+        };
+    }
+
+    /// <summary>
     /// Resolves cross-platform paths for both Windows development and Docker container environments
     /// </summary>
     public static string ResolveCrossPlatformPath(string inputPath, ILogger? logger = null)

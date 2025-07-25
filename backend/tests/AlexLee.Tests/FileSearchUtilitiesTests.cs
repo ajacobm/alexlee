@@ -15,7 +15,7 @@ public class FileSearchUtilitiesTests : IDisposable
     }
     
     [Fact]
-    public async Task SearchFilesParallelAsync_WithValidInput_ShouldReturnCorrectResults()
+    public async Task SearchFilesParallelReduxAsync_WithValidInput_ShouldReturnCorrectResults()
     {
         // Arrange
         await File.WriteAllTextAsync(Path.Combine(_testDirectory, "file1.txt"), "Hello world\nThis is a test\nHello again");
@@ -23,7 +23,7 @@ public class FileSearchUtilitiesTests : IDisposable
         await File.WriteAllTextAsync(Path.Combine(_testDirectory, "file3.cs"), "No match here\nJust code\nNothing relevant");
         
         // Act
-        var result = await FileSearchUtilities.SearchFilesParallelAsync(_testDirectory, "hello", _outputFile);
+        var result = await FileSearchUtilities.SearchFilesParallelReduxAsync(_testDirectory, "hello", _outputFile);
         
         // Assert
         Assert.True(result.FilesProcessed >= 2); // At least the text files should be processed
@@ -37,10 +37,10 @@ public class FileSearchUtilitiesTests : IDisposable
     }
     
     [Fact]
-    public async Task SearchFilesParallelAsync_WithEmptyDirectory_ShouldReturnZeroResults()
+    public async Task SearchFilesParallelReduxAsync_WithEmptyDirectory_ShouldReturnZeroResults()
     {
         // Act
-        var result = await FileSearchUtilities.SearchFilesParallelAsync(_testDirectory, "test", _outputFile);
+        var result = await FileSearchUtilities.SearchFilesParallelReduxAsync(_testDirectory, "test", _outputFile);
         
         // Assert
         Assert.Equal(0, result.FilesProcessed);
@@ -52,32 +52,32 @@ public class FileSearchUtilitiesTests : IDisposable
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public async Task SearchFilesParallelAsync_WithInvalidSearchText_ShouldThrowArgumentException(string searchText)
+    public async Task SearchFilesParallelReduxAsync_WithInvalidSearchText_ShouldThrowArgumentException(string searchText)
     {
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 
-            FileSearchUtilities.SearchFilesParallelAsync(_testDirectory, searchText, _outputFile));
+            FileSearchUtilities.SearchFilesParallelReduxAsync(_testDirectory, searchText, _outputFile));
     }
     
     [Fact]
-    public async Task SearchFilesParallelAsync_WithNonExistentDirectory_ShouldThrowDirectoryNotFoundException()
+    public async Task SearchFilesParallelReduxAsync_WithNonExistentDirectory_ShouldThrowDirectoryNotFoundException()
     {
         // Arrange
         var nonExistentPath = Path.Combine(Path.GetTempPath(), $"nonexistent_{Guid.NewGuid():N}");
         
         // Act & Assert
         await Assert.ThrowsAsync<DirectoryNotFoundException>(() => 
-            FileSearchUtilities.SearchFilesParallelAsync(nonExistentPath, "test", _outputFile));
+            FileSearchUtilities.SearchFilesParallelReduxAsync(nonExistentPath, "test", _outputFile));
     }
     
     [Fact]
-    public async Task SearchFilesParallelAsync_WithCaseSensitivity_ShouldFindMatches()
+    public async Task SearchFilesParallelReduxAsync_WithCaseSensitivity_ShouldFindMatches()
     {
         // Arrange
         await File.WriteAllTextAsync(Path.Combine(_testDirectory, "case_test.txt"), "Hello\nhello\nHELLO\nworld");
         
         // Act
-        var result = await FileSearchUtilities.SearchFilesParallelAsync(_testDirectory, "hello", _outputFile);
+        var result = await FileSearchUtilities.SearchFilesParallelReduxAsync(_testDirectory, "hello", _outputFile);
         
         // Assert - Should find all 3 variations due to case-insensitive search
         Assert.True(result.TotalOccurrences >= 3);
