@@ -15,32 +15,32 @@ help: ## Show this help message
 # Development environment with SQL Server Express
 dev: ## Start development environment (SQL Server + Backend + Frontend)
 	@echo "🚀 Starting Alex Lee development environment with SQL Server Express..."
-	@./sql-server.sh dev
+	@./dev.sh dev
 
 # Production environment  
 prod: ## Start production environment
 	@echo "🏭 Starting Alex Lee production environment..."
-	@./sql-server.sh prod
+	@./dev.sh prod
 
 # Stop all containers
 stop: ## Stop all running containers
 	@echo "⏹️  Stopping all containers..."
-	@./sql-server.sh stop
+	@./dev.sh stop
 
 # Stop and remove containers
 down: ## Stop and remove all containers and networks
 	@echo "⏬ Stopping and removing containers..."
-	@./sql-server.sh down
+	@./dev.sh down
 
 # Full cleanup
 clean: ## Remove all containers, volumes, and images (destructive)
 	@echo "🧹 Performing full cleanup..."
-	@./sql-server.sh clean
+	@./dev.sh clean
 
 # Show logs
 logs: ## Show development environment logs
 	@echo "📋 Showing development logs..."
-	@./sql-server.sh logs
+	@./dev.sh logs
 
 logs-prod: ## Show production environment logs  
 	@echo "📋 Showing production logs..."
@@ -56,26 +56,26 @@ status: ## Show status of all containers
 	@echo "📊 Container status:"
 	@docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 	@echo ""
-	@./sql-server.sh sql-status
+	@./dev.sh sql-status
 
 # SQL Server management
 sql-shell: ## Connect to SQL Server interactive shell
 	@echo "💾 Connecting to SQL Server shell..."
-	@./sql-server.sh sql-shell
+	@./dev.sh sql-shell
 
 sql-status: ## Check SQL Server connection and database status
-	@./sql-server.sh sql-status
+	@./dev.sh sql-status
 
 backup-db: ## Backup SQL Server database
-	@./sql-server.sh backup-db
+	@./dev.sh backup-db
 
 # API testing
 test-api: ## Test all API endpoints including stored procedures
 	@echo "🧪 Testing API endpoints..."
-	@./sql-server.sh test-api
+	@./dev.sh test-api
 
 test-file-search: ## Test file search functionality specifically
-	@./sql-server.sh file-search
+	@./dev.sh file-search
 
 # Build commands
 build-backend: ## Build backend Docker image only
@@ -90,12 +90,12 @@ build-all: build-backend build-frontend ## Build all Docker images
 
 # Development helpers
 watch-logs: ## Watch logs in real-time
-	@./sql-server.sh logs
+	@./dev.sh logs
 
 debug-sql: ## Debug SQL Server with detailed information
 	@echo "🔍 SQL Server Debug Information:"
 	@echo "================================"
-	@./sql-server.sh sql-status
+	@./dev.sh sql-status
 	@echo ""
 	@echo "📋 Recent SQL Server logs:"
 	@docker logs alexlee-sqlserver --tail 20
@@ -108,7 +108,7 @@ verify: ## Quick verification that everything is working
 	@docker ps --filter "name=alexlee" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 	@echo ""
 	@echo "🗄️  SQL Server status:"
-	@./sql-server.sh sql-status
+	@./dev.sh sql-status
 	@echo ""
 	@echo "🔗 Testing API endpoints:" 
 	@curl -s -f http://localhost:5000/health && echo "✅ Health endpoint OK" || echo "❌ Health endpoint failed"

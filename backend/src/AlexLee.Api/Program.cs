@@ -5,7 +5,6 @@ using AlexLee.Infrastructure.Extensions;
 using AlexLee.Api.Middleware;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using OpenTelemetry;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -27,7 +26,7 @@ builder.Services.AddSwaggerGen(c =>
         Contact = new OpenApiContact
         {
             Name = "Alex Lee Developer Exercise",
-            Email = "developer@alexlee.com"
+            Email = "ajacobm@pm.me"
         }
     });
     

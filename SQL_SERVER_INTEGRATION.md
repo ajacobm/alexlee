@@ -48,16 +48,16 @@ The Alex Lee exercise has been enhanced with:
 chmod +x sql-server.sh
 
 # Start development environment
-./sql-server.sh dev
+./dev.sh dev
 
 # Check SQL Server status  
-./sql-server.sh sql-status
+./dev.sh sql-status
 
 # Test API endpoints
-./sql-server.sh test-api
+./dev.sh test-api
 
 # Access SQL Server shell
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 ```
 
 ### Method 2: Direct Docker Compose
@@ -250,13 +250,13 @@ The `AlexLeeDbContext` automatically:
 ### Manual Initialization
 ```bash
 # Using helper script
-./sql-server.sh sql-init
+./dev.sh sql-init
 
 # Direct SQL Server access
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 
 # Check database status
-./sql-server.sh sql-status
+./dev.sh sql-status
 ```
 
 ### SQL Script Integration
@@ -275,10 +275,10 @@ var scriptPaths = new[]
 ### API Testing
 ```bash
 # Test all endpoints
-./sql-server.sh test-api
+./dev.sh test-api
 
 # Test file search specifically  
-./sql-server.sh file-search
+./dev.sh file-search
 
 # Manual API tests
 curl "http://localhost:5000/api/purchasedetails/with-line-numbers"
@@ -289,7 +289,7 @@ curl "http://localhost:5000/api/purchasedetails/summary"
 ### Database Verification
 ```sql
 -- Connect via helper script
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 
 -- Check table and data
 USE AlexLeeDB;
@@ -307,7 +307,7 @@ EXEC dbo.GetDuplicatePurchaseDetails;
 ### Database Backup
 ```bash
 # Automated backup
-./sql-server.sh backup-db
+./dev.sh backup-db
 
 # Manual backup (from SQL shell)
 BACKUP DATABASE AlexLeeDB TO DISK = '/var/opt/mssql/data/alexlee_manual.bak';
@@ -316,7 +316,7 @@ BACKUP DATABASE AlexLeeDB TO DISK = '/var/opt/mssql/data/alexlee_manual.bak';
 ### Database Restore
 ```bash
 # Interactive restore
-./sql-server.sh restore-db
+./dev.sh restore-db
 
 # Manual restore (from SQL shell)
 RESTORE DATABASE AlexLeeDB FROM DISK = '/var/opt/mssql/data/backup.bak' WITH REPLACE;
@@ -327,7 +327,7 @@ RESTORE DATABASE AlexLeeDB FROM DISK = '/var/opt/mssql/data/backup.bak' WITH REP
 ### Production Configuration
 ```bash
 # Start production environment
-./sql-server.sh prod
+./dev.sh prod
 
 # Or directly
 docker-compose -f docker-compose.prod.yml up -d
@@ -352,22 +352,22 @@ FileSearchPath=/app/search-files
 
 | Command | Purpose |
 |---------|---------|
-| `./sql-server.sh dev` | Start development environment |
-| `./sql-server.sh prod` | Start production environment |
-| `./sql-server.sh sql-status` | Check SQL Server health |
-| `./sql-server.sh sql-shell` | Interactive SQL Server shell |
-| `./sql-server.sh test-api` | Test all API endpoints |
-| `./sql-server.sh file-search` | Test file search functionality |
-| `./sql-server.sh backup-db` | Backup the database |
-| `./sql-server.sh logs` | Show application logs |
-| `./sql-server.sh clean` | Full cleanup (destructive) |
+| `./dev.sh dev` | Start development environment |
+| `./dev.sh prod` | Start production environment |
+| `./dev.sh sql-status` | Check SQL Server health |
+| `./dev.sh sql-shell` | Interactive SQL Server shell |
+| `./dev.sh test-api` | Test all API endpoints |
+| `./dev.sh file-search` | Test file search functionality |
+| `./dev.sh backup-db` | Backup the database |
+| `./dev.sh logs` | Show application logs |
+| `./dev.sh clean` | Full cleanup (destructive) |
 
 ## 🔧 Troubleshooting
 
 ### SQL Server Won't Start
 ```bash
 # Check SQL Server logs
-./sql-server.sh sql-logs
+./dev.sh sql-logs
 
 # Verify Docker resources
 docker system df
@@ -380,14 +380,14 @@ netstat -an | grep 1433
 ### Database Connection Issues
 ```bash
 # Test connection manually
-./sql-server.sh sql-status
+./dev.sh sql-status
 
 # Check connection string in API
 curl "http://localhost:5000/health"
 
 # Restart with fresh database
-./sql-server.sh down
-./sql-server.sh dev
+./dev.sh down
+./dev.sh dev
 ```
 
 ### File Search Not Working

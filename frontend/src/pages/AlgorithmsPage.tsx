@@ -21,7 +21,7 @@ const AlgorithmsPage: React.FC = () => {
   const [palindromeLoading, setPalindromeLoading] = useState(false);
 
   // File Search State
-  const [fileSearchForm, setFileSearchForm] = useState<FileSearchRequest>({ searchTerm: 'TODO', directoryPath: '/src' });
+  const [fileSearchForm, setFileSearchForm] = useState<FileSearchRequest>({ searchTerm: '', directoryPath: '/app/search-files' });
   const [fileSearchResult, setFileSearchResult] = useState<FileSearchResponse | null>(null);
   const [fileSearchLoading, setFileSearchLoading] = useState(false);
 
@@ -188,7 +188,7 @@ const AlgorithmsPage: React.FC = () => {
           </div>
           <div className="card-body">
             <p className="text-secondary mb-3">
-              Search for text across multiple files using parallel processing. (Demo version with simulated results)
+              Search for text across multiple files using parallel processing.
             </p>
             
             <div className="form-row mb-3">
@@ -203,7 +203,7 @@ const AlgorithmsPage: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Directory Path (Simulated)</label>
+                <label className="form-label">Directory Path</label>
                 <input
                   type="text"
                   className="form-control"

@@ -56,34 +56,38 @@ BEGIN
     SET NOCOUNT ON;
     
     -- Find duplicates based on the specified criteria
+    WITH DuplicateGroups AS (
     SELECT 
-        PurchaseDetailItemAutoId,
-        PurchaseOrderNumber,
-        ItemNumber,
-        ItemName,
-        ItemDescription,
-        PurchasePrice,
+        PurchaseOrderNumber, 
+        ItemNumber, 
+        PurchasePrice, 
         PurchaseQuantity,
-        LastModifiedByUser,
-        LastModifiedDateTime,
-        COUNT(*) OVER (
-            PARTITION BY PurchaseOrderNumber, ItemNumber, PurchasePrice, PurchaseQuantity
-        ) AS DuplicateCount
+        COUNT(*) AS DuplicateCount
     FROM dbo.PurchaseDetailItem
-    WHERE EXISTS (
-        SELECT 1
-        FROM dbo.PurchaseDetailItem AS pdi2
-        WHERE pdi2.PurchaseOrderNumber = PurchaseDetailItem.PurchaseOrderNumber
-          AND pdi2.ItemNumber = PurchaseDetailItem.ItemNumber
-          AND pdi2.PurchasePrice = PurchaseDetailItem.PurchasePrice
-          AND pdi2.PurchaseQuantity = PurchaseDetailItem.PurchaseQuantity
-        GROUP BY pdi2.PurchaseOrderNumber, pdi2.ItemNumber, pdi2.PurchasePrice, pdi2.PurchaseQuantity
-        HAVING COUNT(*) > 1
+    GROUP BY PurchaseOrderNumber, ItemNumber, PurchasePrice, PurchaseQuantity
+    HAVING COUNT(*) > 1
     )
+    SELECT 
+        pdi.PurchaseDetailItemAutoId,
+        pdi.PurchaseOrderNumber,
+        pdi.ItemNumber,
+        pdi.ItemName,
+        pdi.ItemDescription,
+        pdi.PurchasePrice,
+        pdi.PurchaseQuantity,
+        pdi.LastModifiedByUser,
+        pdi.LastModifiedDateTime,
+        dg.DuplicateCount
+    FROM dbo.PurchaseDetailItem pdi
+    JOIN DuplicateGroups dg
+        ON pdi.PurchaseOrderNumber = dg.PurchaseOrderNumber
+        AND pdi.ItemNumber = dg.ItemNumber
+        AND pdi.PurchasePrice = dg.PurchasePrice
+        AND pdi.PurchaseQuantity = dg.PurchaseQuantity
     ORDER BY 
-        PurchaseOrderNumber,
-        ItemNumber,
-        PurchaseDetailItemAutoId;
+        pdi.PurchaseOrderNumber,
+        pdi.ItemNumber,
+        pdi.PurchaseDetailItemAutoId;
 END
 GO
 

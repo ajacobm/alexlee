@@ -68,16 +68,16 @@ alex-lee/
 chmod +x sql-server.sh
 
 # Start full SQL Server Express environment  
-./sql-server.sh dev
+./dev.sh dev
 
 # Check SQL Server status
-./sql-server.sh sql-status
+./dev.sh sql-status
 
 # Test API endpoints including stored procedures
-./sql-server.sh test-api
+./dev.sh test-api
 
 # Access SQL Server shell for manual queries
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 ```
 
 **Using Docker Compose Directly:**
@@ -86,7 +86,7 @@ chmod +x sql-server.sh
 docker-compose up --build
 
 # Production environment
-./sql-server.sh prod
+./dev.sh prod
 # OR: docker-compose -f docker-compose.prod.yml up -d
 ```
 
@@ -158,9 +158,9 @@ curl -X POST "http://localhost:5000/api/algorithms/file-search" \
 ### Backend Tests (29 passing)
 ```bash
 # Using helper script
-./sql-server.sh dev
+./dev.sh dev
 sleep 10  # Wait for SQL Server
-./sql-server.sh test-api
+./dev.sh test-api
 
 # Manual testing  
 cd backend && dotnet test --verbosity normal
@@ -175,7 +175,7 @@ cd backend && dotnet test --verbosity normal
 ### SQL Server Verification
 ```bash
 # Manual SQL Server testing
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 
 # In SQL shell:
 USE AlexLeeDB;
@@ -260,29 +260,29 @@ The frontend features authentic Alex Lee corporate styling:
 
 ### SQL Server Management Commands
 ```bash
-./sql-server.sh dev         # Start development environment
-./sql-server.sh sql-status  # Check SQL Server health
-./sql-server.sh sql-shell   # Interactive SQL Server shell  
-./sql-server.sh backup-db   # Backup database
-./sql-server.sh logs        # Show application logs
-./sql-server.sh clean       # Full cleanup
+./dev.sh dev         # Start development environment
+./dev.sh sql-status  # Check SQL Server health
+./dev.sh sql-shell   # Interactive SQL Server shell  
+./dev.sh backup-db   # Backup database
+./dev.sh logs        # Show application logs
+./dev.sh clean       # Full cleanup
 ```
 
 ### Development Workflow
 ```bash
 # Start complete environment
-./sql-server.sh dev
+./dev.sh dev
 
 # Make changes to code...
 
 # Test changes
-./sql-server.sh test-api
+./dev.sh test-api
 
 # View logs  
-./sql-server.sh logs
+./dev.sh logs
 
 # SQL debugging
-./sql-server.sh sql-shell
+./dev.sh sql-shell
 ```
 
 ## 📈 Production Deployment
@@ -296,7 +296,7 @@ The frontend features authentic Alex Lee corporate styling:
 
 ```bash
 # Start production environment
-./sql-server.sh prod
+./dev.sh prod
 
 # Check production status
 docker-compose -f docker-compose.prod.yml ps
